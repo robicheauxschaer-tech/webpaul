@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$PAUL - 先知之神归来</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        :root {
+            --color-red: #E53935;
+            --color-dark: #111111;
+            --color-black: #000000;
+            --color-gray: #2A2A2A;
+            --color-light-gray: #444;
+            --color-white: #F5F5F5;
+            --color-green: #2E7D32;
+            --color-gold: #FFD700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background-color: var(--color-dark);
+            color: var(--color-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+        }
+        
+        section {
+            padding: 100px 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+        
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+        }
+        
+        h2 {
+            font-size: 2.8rem;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background-color: var(--color-red);
+            bottom: -10px;
+            left: 0;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        
+        .highlight {
+            color: var(--color-red);
+            font-weight: bold;
+        }
+        
+        .gold-text {
+            color: var(--color-gold);
+            font-weight: bold;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--color-red);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background-color: #c62828;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(229, 57, 53, 0.3);
+        }
+        
+        /* 底部居中图片样式 */
+        .bottom-center-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: 60px;
+            padding-bottom: 30px;
+        }
+        
+        .bottom-center-image img {
+            width: 200px;
+            height: auto;
+            transition: all 0.3s ease;
+            background-color: transparent;
+        }
+        
+        .bottom-center-image img:hover {
+            transform: scale(1.05);
+        }
+        
+        /* 顶部导航栏 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(229, 57, 53, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        header.scrolled {
+            padding: 5px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-img {
+            height: 50px;
+            width: auto;
+            margin-right: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo-text span {
+            color: var(--color-red);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 0;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: var(--color-red);
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--color-red);
+        }
+        
+        .nav-links a:hover:after,
+        .nav-links a.active:after {
+            width: 100%;
+        }
+        
+        .nav-links a.active {
+            color: var(--color-red);
+        }
+        
+        /* 语言切换按钮样式 */
+        .language-switcher {
+            margin-left: 25px;
+        }
+        
+        .language-btn {
+            background-color: var(--color-red);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .language-btn:hover {
+            background-color: #c62828;
+            transform: translateY(-2px);
+        }
+        
+        .language-btn i {
+            font-size: 1rem;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Home 页面 */
+        #home {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1575361204480-aadea25e6e68?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+        }
+        
+        .home-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .home-logo {
+            width: 280px;
+            height: auto;
+            margin: 0 auto 40px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(229, 57, 53, 0.5));
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .home-title {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .home-subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--color-red);
+        }
+        
+        .home-highlight {
+            font-size: 2rem;
+            color: var(--color-gold);
+            margin: 30px 0;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 60px;
+        }
+        
+        .social-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--color-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--color-red);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(229, 57, 53, 0.4);
+        }
+        
+        /* Whitepaper 页面 */
+        #whitepaper {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+        }
+        
+        .whitepaper-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .whitepaper-logo {
+            width: 350px;
+            height: 350px;
+            margin: 0 auto 60px;
+            filter: drop-shadow(0 0 20px rgba(229, 57, 53, 0.6));
+            transition: all 0.4s ease;
+            cursor: pointer;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            border: 3px solid var(--color-red);
+            object-fit: cover;
+            object-position: center;
+        }
+        
+        .whitepaper-logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 25px rgba(229, 57, 53, 0.8));
+            border-color: var(--color-gold);
+            box-shadow: 0 15px 40px rgba(229, 57, 53, 0.3);
+        }
+        
+        .whitepaper-text {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 50px;
+            border-radius: 15px;
+            border: 2px solid var(--color-red);
+            margin-top: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+        }
+        
+        .whitepaper-text p {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        
+        .whitepaper-title {
+            font-size: 4rem;
+            color: var(--color-red);
+            margin-bottom: 40px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            border-bottom: 3px solid var(--color-red);
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+        
+        /* About 页面 */
+        #about {
+            background-color: var(--color-black);
+        }
+        
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+        
+        .about-logo {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .about-logo-img {
+            width: 400px;
+            height: auto;
+            max-width: 100%;
+            filter: drop-shadow(0 0 15px rgba(229, 57, 53, 0.3));
+        }
+        
+        .about-text {
+            flex: 1;
+        }
+        
+        .about-title {
+            font-size: 4rem;
+            color: var(--color-red);
+        }
+        
+        /* ECOLOGY 页面 */
+        #ecology {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 0;
+        }
+        
+        .ecology-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .ecology-image-container {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .ecology-image {
+            width: 100%;
+            max-width: 1000px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--color-red);
+            transition: all 0.3s ease;
+            object-fit: contain;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+        }
+        
+        .ecology-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 50px rgba(229, 57, 53, 0.3);
+        }
+        
+        .ecology-text-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 50px;
+            border-radius: 15px;
+            border: 2px solid var(--color-red);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .ecology-section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 2px solid rgba(229, 57, 53, 0.3);
+        }
+        
+        .ecology-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .ecology-section h3 {
+            font-size: 2.2rem;
+            color: var(--color-red);
+            margin-bottom: 25px;
+            border-left: 4px solid var(--color-red);
+            padding-left: 15px;
+        }
+        
+        .ecology-section p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .ecology-list {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .ecology-list li {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+        
+        /* Tokenomics 页面 */
+        #tokenomics {
+            background-color: var(--color-dark);
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .tokenomics-image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: visible;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+        
+        .tokenomics-image {
+            width: 100%;
+            height: auto;
+            max-height: none;
+            object-fit: contain;
+            border-radius: 15px;
+            transition: transform 0.5s ease;
+        }
+        
+        .tokenomics-image:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Roadmap 页面 */
+        #roadmap {
+            background-color: #000000;
+            padding: 100px 0 80px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+        
+        .roadmap-title {
+            font-size: 8rem;
+            color: var(--color-red);
+            margin-bottom: 30px;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            text-shadow: 0 5px 20px rgba(229, 57, 53, 0.4);
+            font-weight: 900;
+            padding-top: 20px;
+        }
+        
+        .roadmap-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 60vh;
+            gap: 80px;
+            position: relative;
+            margin-top: 0;
+        }
+        
+        .roadmap-image {
+            flex: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+            transition: all 0.5s ease;
+            background-color: transparent;
+            position: relative;
+            min-height: 800px;
+        }
+        
+        .roadmap-image img {
+            width: auto;
+            height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+        
+        .roadmap-image:hover {
+            transform: translateY(-15px);
+        }
+        
+        .roadmap-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .roadmap-box {
+            flex: 1;
+            background-color: var(--color-gray);
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid var(--color-red);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 400px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .roadmap-box:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(229, 57, 53, 0.1) 50%, transparent 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .roadmap-content {
+            position: relative;
+            z-index: 2;
+            text-align: left;
+        }
+        
+        .phase-item {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid rgba(229, 57, 53, 0.4);
+            padding-left: 0;
+        }
+        
+        .phase-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .phase-title {
+            font-size: 1.6rem;
+            color: white;
+            display: block;
+            line-height: 1.4;
+            font-weight: 600;
+            padding: 5px 0;
+        }
+        
+        /* Core Team 页面 */
+        #coreteam {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 0;
+        }
+        
+        .coreteam-title {
+            font-size: 4rem;
+            color: var(--color-red);
+            margin-bottom: 60px;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            border-bottom: 3px solid var(--color-red);
+            display: inline-block;
+            padding-bottom: 15px;
+            width: 100%;
+        }
+        
+        .team-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .team-member {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid var(--color-gray);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+            border-color: var(--color-red);
+            box-shadow: 0 15px 40px rgba(229, 57, 53, 0.3);
+        }
+        
+        .member-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--color-red);
+        }
+        
+        .member-info {
+            padding: 30px;
+        }
+        
+        .member-name {
+            font-size: 1.8rem;
+            color: var(--color-red);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .member-role {
+            font-size: 1.2rem;
+            color: var(--color-gold);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .member-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ccc;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--color-black);
+            padding: 80px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: var(--color-red);
+        }
+        
+        .footer-text {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+        
+        .footer-text p {
+            margin-bottom: 15px;
+        }
+        
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .copyright {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1800px) {
+            .roadmap-title {
+                font-size: 7rem;
+                margin-bottom: 25px;
+            }
+            
+            .roadmap-image {
+                min-height: 700px;
+            }
+            
+            .roadmap-box {
+                min-height: 350px;
+            }
+            
+            .whitepaper-logo {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .team-container {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+            
+            .member-image {
+                height: 350px;
+            }
+            
+            .ecology-image,
+            .ecology-text-container {
+                max-width: 900px;
+            }
+            
+            .bottom-center-image img {
+                width: 180px;
+            }
+        }
+        
+        @media (max-width: 1600px) {
+            .roadmap-title {
+                font-size: 6.5rem;
+                margin-bottom: 25px;
+            }
+            
+            .roadmap-image {
+                min-height: 650px;
+            }
+            
+            .roadmap-box {
+                min-height: 320px;
+                padding: 35px;
+            }
+            
+            .phase-title {
+                font-size: 1.5rem;
+            }
+            
+            .whitepaper-logo {
+                width: 280px;
+                height: 280px;
+            }
+            
+            .whitepaper-text p {
+                font-size: 1.3rem;
+            }
+            
+            .home-highlight {
+                font-size: 1.8rem;
+            }
+            
+            .team-container {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 35px;
+            }
+            
+            .member-image {
+                height: 320px;
+            }
+            
+            .ecology-image,
+            .ecology-text-container {
+                max-width: 850px;
+            }
+            
+            .bottom-center-image img {
+                width: 160px;
+            }
+        }
+        
+        @media (max-width: 1400px) {
+            .roadmap-title {
+                font-size: 6rem;
+                margin-bottom: 25px;
+            }
+            
+            .tokenomics-image-container {
+                max-width: 900px;
+            }
+            
+            .roadmap-image {
+                min-height: 600px;
+            }
+            
+            .roadmap-box {
+                min-height: 300px;
+                padding: 30px;
+            }
+            
+            .phase-title {
+                font-size: 1.4rem;
+            }
+            
+            .whitepaper-logo {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .whitepaper-text p {
+                font-size: 1.2rem;
+            }
+            
+            .home-highlight {
+                font-size: 1.7rem;
+            }
+            
+            .team-container {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 30px;
+            }
+            
+            .member-image {
+                height: 300px;
+            }
+            
+            .ecology-image,
+            .ecology-text-container {
+                max-width: 800px;
+            }
+            
+            .bottom-center-image img {
+                width: 150px;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .roadmap-title {
+                font-size: 5.5rem;
+                margin-bottom: 25px;
+            }
+            
+            .roadmap-container {
+                flex-direction: column;
+                gap: 60px;
+                align-items: center;
+            }
+            
+            .roadmap-image {
+                width: 100%;
+                min-height: 500px;
+                order: -1;
+                flex: none;
+            }
+            
+            .roadmap-box {
+                width: 100%;
+                max-width: 800px;
+                min-height: auto;
+                padding: 40px;
+            }
+            
+            .phase-title {
+                font-size: 1.6rem;
+            }
+            
+            .tokenomics-image-container {
+                max-width: 800px;
+            }
+            
+            .whitepaper-logo {
+                width: 220px;
+                height: 220px;
+                margin-bottom: 40px;
+            }
+            
+            .whitepaper-text {
+                padding: 40px;
+            }
+            
+            .home-highlight {
+                font-size: 1.6rem;
+            }
+            
+            .team-container {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 30px;
+            }
+            
+            .member-image {
+                height: 280px;
+            }
+            
+            .ecology-image,
+            .ecology-text-container {
+                max-width: 750px;
+                padding: 40px;
+            }
+            
+            .bottom-center-image img {
+                width: 140px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            h2 {
+                font-size: 2.3rem;
+            }
+            
+            .home-title {
+                font-size: 3rem;
+            }
+            
+            .about-title {
+                font-size: 3rem;
+            }
+            
+            .whitepaper-title {
+                font-size: 3rem;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .about-logo-img {
+                width: 300px;
+            }
+            
+            .roadmap-title {
+                font-size: 5rem;
+                margin-bottom: 25px;
+            }
+            
+            .roadmap-image {
+                min-height: 450px;
+            }
+            
+            .roadmap-box {
+                padding: 35px;
+            }
+            
+            .phase-title {
+                font-size: 1.5rem;
+            }
+            
+            .whitepaper-logo {
+                width: 200px;
+                height: 200px;
+                margin-bottom: 40px;
+            }
+            
+            .whitepaper-text p {
+                font-size: 1.1rem;
+            }
+            
+            .home-highlight {
+                font-size: 1.5rem;
+            }
+            
+            .coreteam-title {
+                font-size: 3rem;
+            }
+            
+            .team-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 25px;
+            }
+            
+            .member-image {
+                height: 250px;
+            }
+            
+            .member-name {
+                font-size: 1.6rem;
+            }
+            
+            .member-role {
+                font-size: 1.1rem;
+            }
+            
+            .member-description {
+                font-size: 0.95rem;
+            }
+            
+            .ecology-image,
+            .ecology-text-container {
+                max-width: 700px;
+                padding: 35px;
+            }
+            
+            .ecology-section h3 {
+                font-size: 1.9rem;
+            }
+            
+            .ecology-section p {
+                font-size: 1.1rem;
+            }
+            
+            .bottom-center-image {
+                margin-top: 40px;
+            }
+            
+            .bottom-center-image img {
+                width: 130px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 0;
+            }
+            
+            .logo-img {
+                height: 40px;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--color-dark);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+            .language-switcher {
+                margin: 15px 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .home-logo {
+                width: 200px;
+            }
+            
+            .home-title {
+                font-size: 2.5rem;
+            }
+            
+            .home-subtitle {
+                font-size: 1.4rem;
+            }
+            
+            .home-highlight {
+                font-size: 1.4rem;
+                margin: 20px 0;
+            }
+            
+            section {
+                padding: 60px 0;
+            }
+            
+            .ecology-text-container {
+                padding: 30px 25px;
+            }
+            
+            .ecology-section h3 {
+                font-size: 1.8rem;
+            }
+            
+            .roadmap-title {
+                font-size: 4rem;
+                margin-bottom: 25px;
+                letter-spacing: 4px;
+            }
+            
+            .roadmap-image {
+                min-height: 400px;
+            }
+            
+            .roadmap-box {
+                padding: 30px 25px;
+            }
+            
+            .phase-title {
+                font-size: 1.4rem;
+            }
+            
+            .tokenomics-image-container {
+                max-width: 700px;
+            }
+            
+            .whitepaper-logo {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .whitepaper-title {
+                font-size: 2.5rem;
+            }
+            
+            .whitepaper-text {
+                padding: 30px 25px;
+            }
+            
+            .whitepaper-text p {
+                font-size: 1rem;
+            }
+            
+            .coreteam-title {
+                font-size: 2.8rem;
+            }
+            
+            .team-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .member-image {
+                height: 300px;
+            }
+            
+            .member-info {
+                padding: 25px;
+            }
+            
+            .ecology-image,
+            .ecology-text-container {
+                max-width: 100%;
+                padding: 30px;
+            }
+            
+            .bottom-center-image {
+                margin-top: 30px;
+            }
+            
+            .bottom-center-image img {
+                width: 120px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 2.3rem;
+            }
+            
+            h2 {
+                font-size: 1.9rem;
+            }
+            
+            .home-title {
+                font-size: 2rem;
+            }
+            
+            .home-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .home-highlight {
+                font-size: 1.2rem;
+                margin: 15px 0;
+            }
+            
+            .about-title {
+                font-size: 2.5rem;
+            }
+            
+            .about-logo-img {
+                width: 250px;
+            }
+            
+            .roadmap-title {
+                font-size: 3.5rem;
+                margin-bottom: 20px;
+                letter-spacing: 2px;
+            }
+            
+            .roadmap-image {
+                min-height: 350px;
+            }
+            
+            .roadmap-box {
+                padding: 25px 20px;
+            }
+            
+            .phase-item {
+                margin-bottom: 25px;
+                padding-bottom: 25px;
+            }
+            
+            .phase-title {
+                font-size: 1.3rem;
+                line-height: 1.4;
+            }
+            
+            .social-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .tokenomics-image-container {
+                max-width: 100%;
+                margin: 0 10px;
+            }
+            
+            .whitepaper-logo {
+                width: 160px;
+                height: 160px;
+                margin-bottom: 30px;
+            }
+            
+            .whitepaper-title {
+                font-size: 2rem;
+            }
+            
+            .whitepaper-text {
+                padding: 25px 20px;
+            }
+            
+            .whitepaper-text p {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+            
+            .coreteam-title {
+                font-size: 2.3rem;
+                margin-bottom: 40px;
+            }
+            
+            .team-container {
+                gap: 25px;
+            }
+            
+            .member-image {
+                height: 250px;
+            }
+            
+            .member-info {
+                padding: 20px;
+            }
+            
+            .member-name {
+                font-size: 1.5rem;
+            }
+            
+            .member-role {
+                font-size: 1rem;
+            }
+            
+            .member-description {
+                font-size: 0.9rem;
+            }
+            
+            .ecology-text-container {
+                padding: 25px 20px;
+            }
+            
+            .ecology-section {
+                margin-bottom: 30px;
+                padding-bottom: 30px;
+            }
+            
+            .ecology-section h3 {
+                font-size: 1.6rem;
+            }
+            
+            .ecology-section p {
+                font-size: 1rem;
+            }
+            
+            .bottom-center-image {
+                margin-top: 25px;
+            }
+            
+            .bottom-center-image img {
+                width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header id="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="#home" class="logo-container">
+                    <img src="paulcoinblack.jpg" alt="Paul Logo" class="logo-img">
+                    <div class="logo-text">$<span>PAUL</span></div>
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="#home" class="active">首页</a></li>
+                    <li><a href="#whitepaper">白皮书</a></li>
+                    <li><a href="#about">关于</a></li>
+                    <li><a href="#ecology">生态</a></li>
+                    <li><a href="#tokenomics">代币经济学</a></li>
+                    <li><a href="#roadmap">路线图</a></li>
+                    <li><a href="#coreteam">核心团队</a></li>
+                    <!-- 中文页面添加英文切换按钮 -->
+                    <li class="language-switcher">
+                        <button class="language-btn" onclick="window.location.href='index.html'">
+                            <i class="fas fa-language"></i>
+                            <span>English</span>
+                        </button>
+                    </li>
+                </ul>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Home 页面 -->
+    <section id="home">
+        <div class="container">
+            <div class="home-content">
+                <img src="paul.png" alt="Paul Octopus" class="home-logo">
+                
+                <h1 class="home-title">先知保罗归来！</h1>
+                <p class="home-subtitle">统治加密世界杯，一个社区驱动的去中心化预言机王国！</p>
+                
+                <p class="home-highlight">
+                    2026年最伟大的迷因币已释放！
+                </p>
+                
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/paul888octopus/" target="_blank" class="social-icon">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://x.com/Paul888Octopus" target="_blank" class="social-icon">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="bottom-center-image">
+                <img src="rm.png" alt="RM Logo">
+            </div>
+        </div>
+    </section>
+
+    <!-- Whitepaper 页面 -->
+    <section id="whitepaper">
+        <div class="container">
+            <div class="whitepaper-content">
+                <h1 class="whitepaper-title">白皮书</h1>
+                
+                <a href="whitepaper.pdf" target="_blank" class="whitepaper-link">
+                    <img src="pdf.jpg" alt="Whitepaper" class="whitepaper-logo">
+                </a>
+                
+                <div class="whitepaper-text">
+                    <p>PAULcoin 是一个基于比特币 Layer2 技术（Stacks）构建的下一代 Web3 体育预测和娱乐生态系统。它将体育赛事的刺激与区块链的透明度和去中心化特性相结合。该项目以传奇体育预言家"章鱼保罗"为核心，拥有一个全面的生态系统，包括去中心化预测市场、NFT宠物繁殖、社区治理和跨链互操作性。</p>
+                </div>
+            </div>
+            
+            <div class="bottom-center-image">
+                <img src="rm.png" alt="RM Logo">
+            </div>
+        </div>
+    </section>
+
+    <!-- About 页面 -->
+    <section id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-logo">
+                    <img src="paulfootball.png" alt="Paul Octopus" class="about-logo-img">
+                </div>
+                <div class="about-text">
+                    <h2 class="about-title">先知之神归来！</h2>
+                    <p>足球界的传奇预言家已回归，现在来到了加密竞技场。凭借无与伦比的预测能力和神圣的洞察力，保罗准备引领我们穿越波动的加密货币市场。</p>
+                    <p>正如他在2010年世界杯上正确预测了8场比赛中的8场一样，他现在将把他的预言能力带入加密货币世界，创建一个去中心化的预言帝国。</p>
+                </div>
+            </div>
+            
+            <div class="bottom-center-image">
+                <img src="rm.png" alt="RM Logo">
+            </div>
+        </div>
+    </section>
+
+    <!-- ECOLOGY 页面 -->
+    <section id="ecology">
+        <div class="container">
+            <div class="ecology-content">
+                <h2>生态</h2>
+                
+                <div class="ecology-image-container">
+                    <img src="tips.png" alt="Paul Ecology" class="ecology-image">
+                </div>
+                
+                <!-- 更新后的生态页面内容 -->
+                <div class="ecology-text-container">
+                    <div class="ecology-section">
+                        <h3>$PAUL的使命与神圣法则</h3>
+                        <p><span class="highlight">$PAUL 的使命：</span> 在加密世界的混沌中，建立一个新的、由社区驱动的、透明且有趣的预言帝国。</p>
+                        
+                        <p><span class="highlight">我们的神圣法则：</span></p>
+                    </div>
+                    
+                    <div class="ecology-section">
+                        <h3>1. 预言之力，社区共享：</h3>
+                        <p>持有 $PAUL，你就是预言帝国的一员。我们将建立社区预测池，重大体育赛事（不仅是足球！）来临之时，$PAUL持有者可以投票预测，共同决定"帝国的神谕"，用代币经济模型，将预言的力量从少数人手中夺回，交给社区！</p>
+                    </div>
+                    
+                    <div class="ecology-section">
+                        <h3>2. 八臂擒拿，价值捕获：</h3>
+                        <p>保罗有八只手臂，象征着 $PAUL 的强大价值捕获机制</p>
+                        <ul class="ecology-list">
+                            <li><span class="highlight">交易税：</span>每笔交易的一部分将自动进入"预言国库"，用于回购销毁和赛事预测奖金池。</li>
+                            <li><span class="highlight">神圣祭坛：</span>质押你的 $PAUL，可以获得更多 $PAUL奖励，与帝国共同成长</li>
+                            <li><span class="highlight">传奇NFT：</span>将保罗经典的预测瞬间铸造成NFT，只有 $PAULO 持有者可以 mint</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="ecology-section">
+                        <h3>3. Memes的圣战：</h3>
+                        <p>保罗本身就是最强的Meme！我们将发动一场Memes圣战，用最有趣、最病毒式的章鱼表情包和短视频，我们的口号是："In Paulo We Trust!"</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bottom-center-image">
+                <img src="rm.png" alt="RM Logo">
+            </div>
+        </div>
+    </section>
+
+    <!-- Tokenomics 页面 -->
+    <section id="tokenomics">
+        <div class="container">
+            <h2>代币经济学</h2>
+            <div class="tokenomics-image-container">
+                <img src="token.png" alt="Tokenomics" class="tokenomics-image">
+            </div>
+            
+            <div class="bottom-center-image">
+                <img src="rm.png" alt="RM Logo">
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap 页面 -->
+    <section id="roadmap">
+        <div class="container">
+            <h1 class="roadmap-title">路线图</h1>
+            
+            <div class="roadmap-container">
+                <div class="roadmap-image left-image">
+                    <img src="left.jpg" alt="Paul Octopus Left">
+                </div>
+                
+                <div class="roadmap-box">
+                    <div class="roadmap-content">
+                        <div class="phase-item">
+                            <span class="phase-title">第一阶段：用迷因点燃2026世界杯世界</span>
+                        </div>
+                        
+                        <div class="phase-item">
+                            <span class="phase-title">第二阶段：统领链上体育预测帝国</span>
+                        </div>
+                        
+                        <div class="phase-item">
+                            <span class="phase-title">第三阶段：开启链上娱乐帝国新时代</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="roadmap-image right-image">
+                    <img src="right.jpg" alt="Paul Octopus Right">
+                </div>
+            </div>
+            
+            <div class="bottom-center-image">
+                <img src="rm.png" alt="RM Logo">
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Team 页面 -->
+    <section id="coreteam">
+        <div class="container">
+            <h1 class="coreteam-title">核心团队</h1>
+            
+            <div class="team-container">
+                <div class="team-member">
+                    <img src="2.jpg" alt="Matthew Swanson" class="member-image">
+                    <div class="member-info">
+                        <h3 class="member-name">马修·斯旺森</h3>
+                        <p class="member-role">首席执行官（美国）</p>
+                        <p class="member-description">投资顾问马修拥有纽约大学斯特恩商学院MBA学位，并曾是哈佛大学的住院医师。他将金融和技术专业知识与创业思维相结合。在Adaptor Capital期间，他专注于公共互联网和软件投资。作为发表多项第一作者研究的研究人员，他提供深入的金融见解和新兴技术知识。</p>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="1.jpg" alt="Richard Quan" class="member-image">
+                    <div class="member-info">
+                        <h3 class="member-name">理查德·权</h3>
+                        <p class="member-role">首席技术官（美国）</p>
+                        <p class="member-description">理查德在网络安全行业拥有20年的开发和运营经验，包括AI和区块链。他曾担任Ixia的软件开发经理，并曾在SEC的核心部门担任高管职务。领导硅谷、中国和印度的技术团队，理查德开发了富国银行、纳斯达克、AT&T和金融公司等全球知名企业使用的应用程序。目前，他专注于人工智能和区块链技术。理查德还是一名经过认证的Scrum Master，为团队带来了敏捷开发专业知识。</p>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="3.jpg" alt="Sara Ruiz Gutiérrez" class="member-image">
+                    <div class="member-info">
+                        <h3 class="member-name">萨拉·鲁伊斯·古铁雷斯</h3>
+                        <p class="member-role">首席营销官（西班牙）</p>
+                        <p class="member-description">拥有端到端体育赛事营销的丰富经验，我领导过多个顶级体育IP的全周期营销。我专注于开发赞助体系，创建跨境合作实现病毒式传播，并部署全媒体传播矩阵。通过与品牌、媒体和粉丝社区建立强大的合作伙伴关系，我提供了几个病毒式体育传播案例，极大地提升了赛事曝光度。利用创新策略，我推动了品牌知名度和商业价值的同步增长，在端到端体育营销实施和跨境资源整合方面拥有经过验证的专业知识。</p>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="4.jpg" alt="Elva Mae" class="member-image">
+                    <div class="member-info">
+                        <h3 class="member-name">埃尔瓦·梅</h3>
+                        <p class="member-role">副总裁（美国）</p>
+                        <p class="member-description">沃顿商学院毕业生，拥有8年传统媒体和新媒体经验。她从零开始打造了哈尔滨冰雪大世界的城市级营销活动，在亚洲引起轰动。她孵化了无数网红，引发了多次病毒现象，连续三年获得TikTok顶级内容创作者奖。多才多艺，精通内容、流量、增长黑客、营销、团队管理、资源整合和私域运营。在当今既能看到最狂热的市场情绪，也能看到最不理性的散户参与者的加密市场中，我们需要一支深刻理解私域和增长黑客的团队来连接这一切，将流量转化为价值，并在加密空间开启新的叙事——再次书写狗狗币的传奇。</p>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="5.jpg" alt="Emanuel Orlando" class="member-image">
+                    <div class="member-info">
+                        <h3 class="member-name">伊曼纽尔·奥兰多</h3>
+                        <p class="member-role">首席法律官（美国）</p>
+                        <p class="member-description">伊曼纽尔是一位经验丰富的公司和证券律师，专攻区块链技术行业。他的律师事务所是国内和国际（包括Reg A+发行、S-1发行、离岸ICO和创新双代币结构）构建和处理符合SEC标准的代币销售的先驱。他还有一个由高素质的交易税务顾问和战略顾问组成的网络，定期支持我们的客户。他拥有在加利福尼亚州执业的律师资格。</p>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="6.jpg" alt="Kai López Ruiz" class="member-image">
+                    <div class="member-info">
+                        <h3 class="member-name">凯·洛佩斯·鲁伊斯</h3>
+                        <p class="member-role">商务团队负责人（西班牙）</p>
+                        <p class="member-description">领导NFT收藏平台业务运营，与GameFi项目方合作推出联名收藏品，并建立了全球多语言社区，三个月内吸引了超过150,000名成员，收藏品售罄率达到92%。建立了业务发展和绩效评估体系，优化了合作伙伴谈判流程，将团队季度业务转化率提升了35%，并建立了一个覆盖欧洲、美洲和东南亚的行业资源网络。精通交易所上市程序和DeFi/NFT商业运营，在资源整合、项目商业化交付以及团队目标管理和控制方面拥有专业知识。</p>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="7.jpg" alt="William George Taylor" class="member-image">
+                    <div class="member-info">
+                        <h3 class="member-name">威廉·乔治·泰勒</h3>
+                        <p class="member-role">投资与财务团队负责人（英国）</p>
+                        <p class="member-description">拥有15年投资银行和投资经验，曾在摩根士丹利和Mumian Capital工作。2020年，他创立了自己的基金和精品投资银行Gaoyuan Capital。他参与了美团、知乎、达达和宝塔等多个公司的多轮融资，职业生涯融资/投资总额超过20亿美元。他专长于金融与行业之间的跨境合作和资源整合。</p>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="8.jpg" alt="Hu Xinyue" class="member-image">
+                    <div class="member-info">
+                        <h3 class="member-name">胡新月</h3>
+                        <p class="member-role">营销团队负责人（新加坡）</p>
+                        <p class="member-description">加密领域的资深人士，拥有10年运营经验，参与了多个高知名度项目的创立和运营。她还拥有丰富的商学院教育培训体系建设经验。她孵化了众多平台和品牌，并组织了超过1,000场线下会议，转化率极高。她在会议和活动组织策划方面拥有专业能力。XRP新上市团队核心成员。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bottom-center-image">
+                <img src="rm.png" alt="RM Logo">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    $PAUL - 先知归来！
+                </div>
+                
+                <div class="footer-text">
+                    <p><span class="highlight">我们的目标：</span></p>
+                    <p>不仅仅是另一个短暂的迷因币。</p>
+                    <p>我们的目标是成为无可争议的体育迷因币之王，成为每次世界杯、欧洲杯和欧冠联赛都必须提及的文化标志！</p>
+                    
+                    <p style="margin-top: 30px;">立即加入我们的Telegram/Discord社区！</p>
+                    <p>关注我们的Twitter，等待合约发布！</p>
+                    <p>准备好你的钱包，迎接先知之神的到来！</p>
+                    
+                    <p style="margin-top: 30px; font-size: 1.5rem; color: var(--color-red);">让世界再次见证——谁才是真正的预言皇帝！</p>
+                </div>
+                
+                <div class="footer-social">
+                    <a href="https://www.instagram.com/paul888octopus/" target="_blank" class="social-icon">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://x.com/Paul888Octopus" target="_blank" class="social-icon">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+                
+                <div class="copyright">
+                    <p>联系方式：paulo@paulo.vip</p>
+                    <p>&copy; 2026 $PAUL预言帝国。保留所有权利。先知之神已归来！</p>
+                </div>
+            </div>
+            
+            <div class="bottom-center-image">
+                <img src="rm.png" alt="RM Logo">
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+        
+        // 滚动时固定导航栏
+        const header = document.getElementById('header');
+        const logoImg = document.querySelector('.logo-img');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                logoImg.style.height = '40px';
+            } else {
+                header.classList.remove('scrolled');
+                logoImg.style.height = '50px';
+            }
+        });
+        
+        // 点击导航链接后关闭移动菜单
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+        
+        // 点击Whitepaper图标时的提示
+        const whitepaperLink = document.querySelector('.whitepaper-link');
+        whitepaperLink.addEventListener('click', (e) => {
+            console.log('打开白皮书PDF...');
+        });
+    </script>
+</body>
+</html>
