@@ -4,10 +4,10 @@ export const ICO_CONFIG = {
   PRICE: 0.2,                    // 0.2 USDT = 1 PAULO
   PAULO_PER_USDT: 5,             // 1 USDT = 5 PAULO
 
-  // Purchase limits
-  MIN_PURCHASE: 40,              // Minimum 40 USDT per transaction
-  MAX_PURCHASE: 400,             // Maximum 400 USDT per transaction
-  MAX_PER_ACCOUNT: 400,          // Maximum 400 USDT per account total
+  // Purchase limits (TESTING: reduced by 10x)
+  MIN_PURCHASE: 4,               // Minimum 4 USDT per transaction
+  MAX_PURCHASE: 40,              // Maximum 40 USDT per transaction
+  MAX_PER_ACCOUNT: 40,           // Maximum 40 USDT per account total
 
   // Total supply allocation
   TOTAL_SUPPLY: 120_000_000,     // 120 million total

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useICO } from '../../hooks/useICO'
 import { useWallet } from '../../hooks/useWallet'
 import { ICO_CONFIG } from '../../constants/ico'
@@ -10,12 +10,22 @@ export default function PurchasePanel() {
     calculatePauloAmount,
     isWritePending,
     isConfirming,
+    isConfirmed,
     needsApproval,
     approveUsdt,
-    purchase,
+    buy,
+    saleInfo,
+    refetchAll,
   } = useICO()
 
   const [localAmount, setLocalAmount] = useState('')
+
+  // Refresh data when transaction is confirmed
+  useEffect(() => {
+    if (isConfirmed) {
+      refetchAll()
+    }
+  }, [isConfirmed, refetchAll])
 
   const handleAmountChange = (value: string) => {
     setLocalAmount(value)
@@ -30,13 +40,26 @@ export default function PurchasePanel() {
     }
   }
 
-  const handlePurchase = () => {
+  const handleBuy = () => {
     if (amountBigInt > 0n) {
-      purchase(amountBigInt)
+      buy(amountBigInt)
     }
   }
 
   const requiresApproval = needsApproval(amountBigInt)
+
+  // Get dynamic lock duration from contract
+  const phase1LockDays = saleInfo ? Math.floor(Number(saleInfo.phase1LockDuration) / 86400) : 365
+  const phase2LockDays = saleInfo ? Math.floor(Number(saleInfo.phase2LockDuration) / 86400) : 1460
+
+  // Format lock duration for display
+  const formatLockDays = (days: number): string => {
+    if (days >= 365) {
+      const years = Math.floor(days / 365)
+      return `${years} year${years > 1 ? 's' : ''}`
+    }
+    return `${days} days`
+  }
 
   return (
     <div className="purchase-panel">
@@ -65,7 +88,7 @@ export default function PurchasePanel() {
           <p>You will receive:</p>
           <p className="amount">{pauloAmount} PAULO</p>
           <p style={{ fontSize: '0.9rem', color: '#888', marginTop: '10px' }}>
-            Lock Period: Randomly assigned (1 year or 4 years)
+            Lock Period: {formatLockDays(phase1LockDays)} or {formatLockDays(phase2LockDays)} (based on phase)
           </p>
         </div>
       )}
@@ -85,9 +108,9 @@ export default function PurchasePanel() {
         <button
           className="btn"
           disabled={isWritePending || isConfirming || !isConnected || requiresApproval}
-          onClick={handlePurchase}
+          onClick={handleBuy}
         >
-          {isConfirming ? 'Confirming...' : isWritePending ? 'Purchasing...' : 'Purchase'}
+          {isConfirming ? 'Confirming...' : isWritePending ? 'Buying...' : 'Buy'}
         </button>
       </div>
 
@@ -97,7 +120,7 @@ export default function PurchasePanel() {
           <li><strong>Min Purchase:</strong> {ICO_CONFIG.MIN_PURCHASE} USDT</li>
           <li><strong>Max Purchase:</strong> {ICO_CONFIG.MAX_PURCHASE} USDT</li>
           <li><strong>Account Limit:</strong> {ICO_CONFIG.MAX_PER_ACCOUNT} USDT</li>
-          <li><strong>Lock Period:</strong> 1 year or 4 years</li>
+          <li><strong>Lock Period:</strong> {formatLockDays(phase1LockDays)} or {formatLockDays(phase2LockDays)}</li>
         </ul>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import Header from './components/Header/Header'
 import Hero from './components/Hero/Hero'
 import About from './components/About/About'
+import Whitepaper from './components/Whitepaper/Whitepaper'
 import Ecology from './components/Ecology/Ecology'
 import Tokenomics from './components/Tokenomics/Tokenomics'
 import Roadmap from './components/Roadmap/Roadmap'
@@ -29,9 +30,9 @@ function App() {
                 <h3>ICO Rules</h3>
                 <ul>
                   <li><strong>Price:</strong> 0.2 USDT = 1 PAULO</li>
-                  <li><strong>Min Purchase:</strong> 40 USDT</li>
-                  <li><strong>Max Purchase:</strong> 400 USDT per transaction</li>
-                  <li><strong>Account Limit:</strong> 400 USDT total</li>
+                  <li><strong>Min Purchase:</strong> 4 USDT</li>
+                  <li><strong>Max Purchase:</strong> 40 USDT per transaction</li>
+                  <li><strong>Account Limit:</strong> 40 USDT total</li>
                   <li><strong>Lock Period:</strong> 1 year or 4 years</li>
                 </ul>
                 {!isConnected && (
@@ -48,6 +49,7 @@ function App() {
           </div>
         </section>
         <About />
+        <Whitepaper />
         <Ecology />
         <Tokenomics />
         <Roadmap />

@@ -25,3 +25,7 @@ npm-debug.log*
 
 # Misc
 *.local
+
+# Qoder/IDE cache
+.msun/
+.qoder/

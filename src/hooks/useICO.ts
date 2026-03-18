@@ -1,44 +1,86 @@
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { useState, useCallback } from 'react'
-import { icoAbi, usdtAbi, type PurchaseRecord } from '../config/contract'
+import { icoAbi, usdtAbi, type LockRecord, type UserSummary, type SaleInfo } from '../config/contract'
 import { ICO_CONTRACT_ADDRESS, USDT_CONTRACT_ADDRESS, ICO_CONFIG } from '../constants/ico'
+
+export interface PhaseLockRecord extends LockRecord {
+  index: number
+  phase: 1 | 2
+}
+
+// Type for getUserSummary return
+type UserSummaryResult = readonly [
+  bigint, // totalSpentUsdt
+  bigint, // remainingUsdtQuota
+  bigint, // phase1Locked
+  bigint, // phase1Claimable
+  bigint, // phase1AlreadyClaimed
+  bigint, // phase1EarliestUnlock
+  bigint, // phase2Locked
+  bigint, // phase2Claimable
+  bigint, // phase2AlreadyClaimed
+  bigint, // phase2EarliestUnlock
+]
+
+// Type for getSaleInfo return
+type SaleInfoResult = readonly [
+  bigint,  // _phase1Sold
+  bigint,  // _phase1Remaining
+  bigint,  // _phase2Sold
+  bigint,  // _phase2Remaining
+  bigint,  // _totalSold
+  bigint,  // _totalRemaining
+  bigint,  // _totalUsdtRaised
+  boolean, // _saleActive
+  bigint,  // _phase1LockDuration
+  bigint,  // _phase2LockDuration
+]
 
 export function useICO() {
   const { address, isConnected } = useAccount()
   const { writeContract, data: hash, isPending: isWritePending } = useWriteContract()
-  const [purchaseAmount, setPurchaseAmount] = useState<string>('')
   const [error, setError] = useState<string>('')
 
-  // Read user's purchase records
-  const { data: records, refetch: refetchRecords } = useReadContract({
+  // Read user's Phase 1 lock records
+  const { data: phase1Locks, refetch: refetchPhase1 } = useReadContract({
     address: ICO_CONTRACT_ADDRESS,
     abi: icoAbi,
-    functionName: 'getPurchaseRecords',
+    functionName: 'getUserPhase1Locks',
     args: address ? [address] : undefined,
     query: {
       enabled: !!address && isConnected,
     },
   })
 
-  // Read user's total purchased amount
-  const { data: totalPurchased, refetch: refetchTotal } = useReadContract({
+  // Read user's Phase 2 lock records
+  const { data: phase2Locks, refetch: refetchPhase2 } = useReadContract({
     address: ICO_CONTRACT_ADDRESS,
     abi: icoAbi,
-    functionName: 'getTotalPurchased',
+    functionName: 'getUserPhase2Locks',
     args: address ? [address] : undefined,
     query: {
       enabled: !!address && isConnected,
     },
   })
 
-  // Read claimable amount
-  const { data: claimableAmount, refetch: refetchClaimable } = useReadContract({
+  // Read user summary
+  const { data: userSummary, refetch: refetchSummary } = useReadContract({
     address: ICO_CONTRACT_ADDRESS,
     abi: icoAbi,
-    functionName: 'getClaimableAmount',
+    functionName: 'getUserSummary',
     args: address ? [address] : undefined,
     query: {
       enabled: !!address && isConnected,
+    },
+  })
+
+  // Read sale info
+  const { data: saleInfo, refetch: refetchSaleInfo } = useReadContract({
+    address: ICO_CONTRACT_ADDRESS,
+    abi: icoAbi,
+    functionName: 'getSaleInfo',
+    query: {
+      enabled: true,
     },
   })
 
@@ -73,8 +115,8 @@ export function useICO() {
     })
   }, [isConnected, writeContract])
 
-  // Purchase PAULO tokens
-  const purchase = useCallback((usdtAmount: bigint) => {
+  // Buy PAULO tokens
+  const buy = useCallback((usdtAmount: bigint) => {
     if (!isConnected) {
       setError('Please connect wallet first')
       return
@@ -92,9 +134,11 @@ export function useICO() {
       return
     }
 
-    // Check total purchased
-    const totalPurchasedNumber = totalPurchased ? Number(totalPurchased) / 1e18 : 0
-    if (totalPurchasedNumber + usdtAmountNumber > ICO_CONFIG.MAX_PER_ACCOUNT) {
+    // Check total spent from userSummary
+    const summary = userSummary as UserSummaryResult | undefined
+    const totalSpentUsdt = summary ? summary[0] : 0n
+    const totalSpentNumber = Number(totalSpentUsdt) / 1e18
+    if (totalSpentNumber + usdtAmountNumber > ICO_CONFIG.MAX_PER_ACCOUNT) {
       setError(`Account limit exceeded. Maximum ${ICO_CONFIG.MAX_PER_ACCOUNT} USDT per account`)
       return
     }
@@ -103,13 +147,13 @@ export function useICO() {
     writeContract({
       address: ICO_CONTRACT_ADDRESS,
       abi: icoAbi,
-      functionName: 'purchase',
+      functionName: 'buy',
       args: [usdtAmount],
     })
-  }, [isConnected, totalPurchased, writeContract])
+  }, [isConnected, userSummary, writeContract])
 
-  // Claim tokens for a specific record
-  const claim = useCallback((recordId: bigint) => {
+  // Claim Phase 1 tokens by index
+  const claimPhase1 = useCallback((index: bigint) => {
     if (!isConnected) {
       setError('Please connect wallet first')
       return
@@ -118,8 +162,53 @@ export function useICO() {
     writeContract({
       address: ICO_CONTRACT_ADDRESS,
       abi: icoAbi,
-      functionName: 'claim',
-      args: [recordId],
+      functionName: 'claimPhase1',
+      args: [index],
+    })
+  }, [isConnected, writeContract])
+
+  // Claim Phase 2 tokens by index
+  const claimPhase2 = useCallback((index: bigint) => {
+    if (!isConnected) {
+      setError('Please connect wallet first')
+      return
+    }
+    setError('')
+    writeContract({
+      address: ICO_CONTRACT_ADDRESS,
+      abi: icoAbi,
+      functionName: 'claimPhase2',
+      args: [index],
+    })
+  }, [isConnected, writeContract])
+
+  // Claim all Phase 1 tokens
+  const claimAllPhase1 = useCallback(() => {
+    if (!isConnected) {
+      setError('Please connect wallet first')
+      return
+    }
+    setError('')
+    writeContract({
+      address: ICO_CONTRACT_ADDRESS,
+      abi: icoAbi,
+      functionName: 'claimAllPhase1',
+      args: [],
+    })
+  }, [isConnected, writeContract])
+
+  // Claim all Phase 2 tokens
+  const claimAllPhase2 = useCallback(() => {
+    if (!isConnected) {
+      setError('Please connect wallet first')
+      return
+    }
+    setError('')
+    writeContract({
+      address: ICO_CONTRACT_ADDRESS,
+      abi: icoAbi,
+      functionName: 'claimAllPhase2',
+      args: [],
     })
   }, [isConnected, writeContract])
 
@@ -138,34 +227,83 @@ export function useICO() {
 
   // Refetch all data
   const refetchAll = useCallback(() => {
-    refetchRecords()
-    refetchTotal()
-    refetchClaimable()
+    refetchPhase1()
+    refetchPhase2()
+    refetchSummary()
+    refetchSaleInfo()
     refetchAllowance()
-  }, [refetchRecords, refetchTotal, refetchClaimable, refetchAllowance])
+  }, [refetchPhase1, refetchPhase2, refetchSummary, refetchSaleInfo, refetchAllowance])
 
-  // Format purchase records - handle the raw contract response
-  const formattedRecords: PurchaseRecord[] = records ? (records as any[]).map((record) => ({
-    id: record.id ?? record[0],
-    amount: record.amount ?? record[1],
-    pauloAmount: record.pauloAmount ?? record[2],
-    lockPeriod: record.lockPeriod ?? record[3],
-    purchaseTime: record.purchaseTime ?? record[4],
-    unlockTime: record.unlockTime ?? record[5],
-    claimed: record.claimed ?? record[6],
-  })) : []
+  // Format Phase 1 lock records
+  const formattedPhase1Locks: PhaseLockRecord[] = phase1Locks
+    ? (phase1Locks as LockRecord[]).map((record, index) => ({
+        ...record,
+        index,
+        phase: 1 as const,
+      }))
+    : []
+
+  // Format Phase 2 lock records
+  const formattedPhase2Locks: PhaseLockRecord[] = phase2Locks
+    ? (phase2Locks as LockRecord[]).map((record, index) => ({
+        ...record,
+        index,
+        phase: 2 as const,
+      }))
+    : []
+
+  // All records combined
+  const allRecords = [...formattedPhase1Locks, ...formattedPhase2Locks]
+
+  // Parse user summary
+  const parsedUserSummary: UserSummary | null = userSummary
+    ? (() => {
+        const s = userSummary as UserSummaryResult
+        return {
+          totalSpentUsdt: s[0],
+          remainingUsdtQuota: s[1],
+          phase1Locked: s[2],
+          phase1Claimable: s[3],
+          phase1AlreadyClaimed: s[4],
+          phase1EarliestUnlock: s[5],
+          phase2Locked: s[6],
+          phase2Claimable: s[7],
+          phase2AlreadyClaimed: s[8],
+          phase2EarliestUnlock: s[9],
+        }
+      })()
+    : null
+
+  // Parse sale info
+  const parsedSaleInfo: SaleInfo | null = saleInfo
+    ? (() => {
+        const s = saleInfo as SaleInfoResult
+        return {
+          phase1Sold: s[0],
+          phase1Remaining: s[1],
+          phase2Sold: s[2],
+          phase2Remaining: s[3],
+          totalSold: s[4],
+          totalRemaining: s[5],
+          totalUsdtRaised: s[6],
+          saleActive: s[7],
+          phase1LockDuration: s[8],
+          phase2LockDuration: s[9],
+        }
+      })()
+    : null
 
   return {
     // State
-    purchaseAmount,
-    setPurchaseAmount,
     error,
     setError,
 
     // Data
-    records: formattedRecords,
-    totalPurchased,
-    claimableAmount,
+    phase1Locks: formattedPhase1Locks,
+    phase2Locks: formattedPhase2Locks,
+    allRecords,
+    userSummary: parsedUserSummary,
+    saleInfo: parsedSaleInfo,
     allowance,
 
     // Transaction status
@@ -176,8 +314,11 @@ export function useICO() {
 
     // Actions
     approveUsdt,
-    purchase,
-    claim,
+    buy,
+    claimPhase1,
+    claimPhase2,
+    claimAllPhase1,
+    claimAllPhase2,
     calculatePauloAmount,
     needsApproval,
     refetchAll,

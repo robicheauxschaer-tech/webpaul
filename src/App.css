@@ -2017,3 +2017,163 @@ footer {
   color: var(--color-red);
   border: 1px solid var(--color-red);
 }
+
+/* Records Panel Styles */
+.records-panel {
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 30px;
+  border-radius: 15px;
+  border: 2px solid var(--color-gray);
+}
+
+.records-panel h3 {
+  color: var(--color-red);
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.records-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  background-color: var(--color-gray);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.summary-label {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.summary-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.summary-value.locked {
+  color: #ff9800;
+}
+
+.summary-value.claimable {
+  color: #4caf50;
+}
+
+.summary-value.claimed {
+  color: #9e9e9e;
+}
+
+.phase-section {
+  margin-bottom: 25px;
+}
+
+.phase-section h4 {
+  color: var(--color-gold);
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--color-gray);
+  padding-bottom: 10px;
+}
+
+.record-item {
+  background-color: var(--color-gray);
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.record-item:hover {
+  border-color: var(--color-red);
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.record-phase {
+  font-size: 0.95rem;
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.record-status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.record-status.locked {
+  background-color: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+}
+
+.record-status.claimable {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.record-status.claimed {
+  background-color: rgba(158, 158, 158, 0.2);
+  color: #9e9e9e;
+}
+
+.record-details p {
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+  color: #ccc;
+}
+
+.record-details p:last-child {
+  margin-bottom: 0;
+}
+
+.record-details strong {
+  color: #fff;
+}
+
+/* Claim All Section */
+.claim-all-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.claim-btn {
+  background: linear-gradient(135deg, var(--color-red) 0%, #c62828 100%);
+  transition: all 0.3s ease;
+}
+
+.claim-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(229, 57, 53, 0.4);
+}
+
+.claim-btn-small {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  background: linear-gradient(135deg, var(--color-red) 0%, #c62828 100%);
+}
+
+.no-records {
+  color: #888;
+  text-align: center;
+  padding: 30px;
+  font-size: 1rem;
+}
