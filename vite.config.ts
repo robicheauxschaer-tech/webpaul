@@ -14,6 +14,6 @@ export default defineConfig({
   },
   preview: {
     host: '0.0.0.0',
-    port: parseInt(process.env.PORT || '4173'),
+    // Port will be set via CLI argument in package.json
   },
 })

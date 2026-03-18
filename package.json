@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview --host 0.0.0.0 --port ${PORT:-4173}",
+    "start": "serve -s dist -l $PORT",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
@@ -14,6 +15,7 @@
     "@wagmi/connectors": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "serve": "^14.2.0",
     "viem": "^2.8.0",
     "wagmi": "^2.5.0"
   },
