@@ -23,6 +23,8 @@ function Phase1Panel() {
     isWritePending,
     isConfirming,
     isConfirmed,
+    writeError,
+    resetWrite,
     needsApproval,
     approveUsdt,
     buyPhase1,
@@ -37,6 +39,14 @@ function Phase1Panel() {
   const alreadyPurchased = userSummary?.phase1PurchasedFlag === 1n
   const phase1LockDays = saleInfo ? Math.floor(Number(saleInfo.phase1LockDuration) / 86400) : 365
   const phase1Remaining = saleInfo ? Number(saleInfo.phase1Remaining) / 1e6 : 0
+
+  // Reset step on write error (e.g. user rejected in wallet)
+  useEffect(() => {
+    if (writeError && step !== 'idle') {
+      setStep('idle')
+      resetWrite()
+    }
+  }, [writeError, step, resetWrite])
 
   // Watch for transaction confirmation
   useEffect(() => {
@@ -145,6 +155,8 @@ function Phase2Panel() {
     isWritePending,
     isConfirming,
     isConfirmed,
+    writeError,
+    resetWrite,
     needsApproval,
     approveUsdt,
     buyPhase2,
@@ -165,6 +177,15 @@ function Phase2Panel() {
   const reachedLimit = purchasesLeft <= 0
   const phase2LockDays = saleInfo ? Math.floor(Number(saleInfo.phase2LockDuration) / 86400) : 1460
   const phase2Remaining = saleInfo ? Number(saleInfo.phase2Remaining) / 1e6 : 0
+
+  // Reset step on write error (e.g. user rejected in wallet)
+  useEffect(() => {
+    if (writeError && step !== 'idle') {
+      setStep('idle')
+      pendingAmountRef.current = 0n
+      resetWrite()
+    }
+  }, [writeError, step, resetWrite])
 
   // Watch for transaction confirmation
   useEffect(() => {

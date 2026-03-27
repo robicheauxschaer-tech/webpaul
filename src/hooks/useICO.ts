@@ -40,7 +40,7 @@ type SaleInfoResult = readonly [
 
 export function useICO() {
   const { address, isConnected } = useAccount()
-  const { writeContract, data: hash, isPending: isWritePending } = useWriteContract()
+  const { writeContract, data: hash, isPending: isWritePending, error: writeError, reset: resetWrite } = useWriteContract()
   const [error, setError] = useState<string>('')
 
   // Read user's Phase 1 lock records
@@ -337,6 +337,8 @@ export function useICO() {
     isWritePending,
     isConfirming,
     isConfirmed,
+    writeError,
+    resetWrite,
 
     // Actions
     approveUsdt,
