@@ -8,7 +8,9 @@ export interface LockRecord {
 // User Summary type (from getUserSummary)
 export interface UserSummary {
   totalSpentUsdt: bigint
-  remainingUsdtQuota: bigint
+  phase1PurchasedFlag: bigint
+  phase2PurchasesUsed: bigint
+  phase2PurchasesLeft: bigint
   phase1Locked: bigint
   phase1Claimable: bigint
   phase1AlreadyClaimed: bigint
@@ -77,7 +79,9 @@ export const icoAbi = [
     name: 'getUserSummary',
     outputs: [
       { name: 'totalSpentUsdt', type: 'uint256' },
-      { name: 'remainingUsdtQuota', type: 'uint256' },
+      { name: 'phase1PurchasedFlag', type: 'uint256' },
+      { name: 'phase2PurchasesUsed', type: 'uint256' },
+      { name: 'phase2PurchasesLeft', type: 'uint256' },
       { name: 'phase1Locked', type: 'uint256' },
       { name: 'phase1Claimable', type: 'uint256' },
       { name: 'phase1AlreadyClaimed', type: 'uint256' },
@@ -117,10 +121,18 @@ export const icoAbi = [
     stateMutability: 'view',
     type: 'function',
   },
-  // Write: Buy tokens
+  // Write: Buy Phase 1 tokens (no parameters, fixed 10,000 USDT)
+  {
+    inputs: [],
+    name: 'buyPhase1',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  // Write: Buy Phase 2 tokens
   {
     inputs: [{ name: 'usdtAmount', type: 'uint256' }],
-    name: 'buy',
+    name: 'buyPhase2',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

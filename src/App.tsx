@@ -26,19 +26,18 @@ function App() {
             <p className="ico-subtitle">Participate in the PAULO token sale</p>
             <div className="ico-grid">
               <PurchasePanel />
-              <div className="ico-info">
-                <h3>ICO Rules</h3>
-                <ul>
-                  <li><strong>Price:</strong> 0.2 USDT = 1 PAULO</li>
-                  <li><strong>Min Purchase:</strong> 4 USDT</li>
-                  <li><strong>Max Purchase:</strong> 40 USDT per transaction</li>
-                  <li><strong>Account Limit:</strong> 40 USDT total</li>
-                  <li><strong>Lock Period:</strong> 1 year or 4 years</li>
-                </ul>
-                {!isConnected && (
-                  <p className="connect-hint">Connect your wallet to participate</p>
-                )}
-              </div>
+            </div>
+            <div className="ico-info" style={{ maxWidth: '800px', margin: '30px auto 0' }}>
+              <h3>ICO Rules</h3>
+              <ul>
+                <li><strong>Price:</strong> 0.2 USDT = 1 PAULO</li>
+                <li><strong>Phase 1:</strong> Fixed 10,000 USDT per purchase, 1 purchase per address, 1 year lock</li>
+                <li><strong>Phase 2:</strong> 40 - 400 USDT per transaction, max 4 purchases per address, 4 years lock</li>
+                <li><strong>Allocation:</strong> Phase 1: 20M PAULO | Phase 2: 100M PAULO</li>
+              </ul>
+              {!isConnected && (
+                <p className="connect-hint">Connect your wallet to participate</p>
+              )}
             </div>
             {isConnected && (
               <div className="ico-records">

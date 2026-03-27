@@ -11,7 +11,9 @@ export interface PhaseLockRecord extends LockRecord {
 // Type for getUserSummary return
 type UserSummaryResult = readonly [
   bigint, // totalSpentUsdt
-  bigint, // remainingUsdtQuota
+  bigint, // phase1PurchasedFlag
+  bigint, // phase2PurchasesUsed
+  bigint, // phase2PurchasesLeft
   bigint, // phase1Locked
   bigint, // phase1Claimable
   bigint, // phase1AlreadyClaimed
@@ -115,8 +117,31 @@ export function useICO() {
     })
   }, [isConnected, writeContract])
 
-  // Buy PAULO tokens
-  const buy = useCallback((usdtAmount: bigint) => {
+  // Buy Phase 1 tokens (fixed 10,000 USDT, one per address)
+  const buyPhase1 = useCallback(() => {
+    if (!isConnected) {
+      setError('Please connect wallet first')
+      return
+    }
+
+    // Check if already purchased
+    const summary = userSummary as UserSummaryResult | undefined
+    if (summary && summary[1] === 1n) {
+      setError('You have already purchased Phase 1')
+      return
+    }
+
+    setError('')
+    writeContract({
+      address: ICO_CONTRACT_ADDRESS,
+      abi: icoAbi,
+      functionName: 'buyPhase1',
+      args: [],
+    })
+  }, [isConnected, userSummary, writeContract])
+
+  // Buy Phase 2 tokens (40-400 USDT, max 4 purchases)
+  const buyPhase2 = useCallback((usdtAmount: bigint) => {
     if (!isConnected) {
       setError('Please connect wallet first')
       return
@@ -125,21 +150,20 @@ export function useICO() {
     const usdtAmountNumber = Number(usdtAmount) / 1e18
 
     // Validate purchase amount
-    if (usdtAmountNumber < ICO_CONFIG.MIN_PURCHASE) {
-      setError(`Minimum purchase is ${ICO_CONFIG.MIN_PURCHASE} USDT`)
+    if (usdtAmountNumber < ICO_CONFIG.PHASE2_MIN_PURCHASE) {
+      setError(`Minimum purchase is ${ICO_CONFIG.PHASE2_MIN_PURCHASE} USDT`)
       return
     }
-    if (usdtAmountNumber > ICO_CONFIG.MAX_PURCHASE) {
-      setError(`Maximum purchase is ${ICO_CONFIG.MAX_PURCHASE} USDT per transaction`)
+    if (usdtAmountNumber > ICO_CONFIG.PHASE2_MAX_PURCHASE) {
+      setError(`Maximum purchase is ${ICO_CONFIG.PHASE2_MAX_PURCHASE} USDT per transaction`)
       return
     }
 
-    // Check total spent from userSummary
+    // Check purchase count
     const summary = userSummary as UserSummaryResult | undefined
-    const totalSpentUsdt = summary ? summary[0] : 0n
-    const totalSpentNumber = Number(totalSpentUsdt) / 1e18
-    if (totalSpentNumber + usdtAmountNumber > ICO_CONFIG.MAX_PER_ACCOUNT) {
-      setError(`Account limit exceeded. Maximum ${ICO_CONFIG.MAX_PER_ACCOUNT} USDT per account`)
+    const purchasesLeft = summary ? Number(summary[3]) : ICO_CONFIG.PHASE2_MAX_PURCHASES
+    if (purchasesLeft <= 0) {
+      setError(`Purchase limit reached (max ${ICO_CONFIG.PHASE2_MAX_PURCHASES} purchases)`)
       return
     }
 
@@ -147,7 +171,7 @@ export function useICO() {
     writeContract({
       address: ICO_CONTRACT_ADDRESS,
       abi: icoAbi,
-      functionName: 'buy',
+      functionName: 'buyPhase2',
       args: [usdtAmount],
     })
   }, [isConnected, userSummary, writeContract])
@@ -261,15 +285,17 @@ export function useICO() {
         const s = userSummary as UserSummaryResult
         return {
           totalSpentUsdt: s[0],
-          remainingUsdtQuota: s[1],
-          phase1Locked: s[2],
-          phase1Claimable: s[3],
-          phase1AlreadyClaimed: s[4],
-          phase1EarliestUnlock: s[5],
-          phase2Locked: s[6],
-          phase2Claimable: s[7],
-          phase2AlreadyClaimed: s[8],
-          phase2EarliestUnlock: s[9],
+          phase1PurchasedFlag: s[1],
+          phase2PurchasesUsed: s[2],
+          phase2PurchasesLeft: s[3],
+          phase1Locked: s[4],
+          phase1Claimable: s[5],
+          phase1AlreadyClaimed: s[6],
+          phase1EarliestUnlock: s[7],
+          phase2Locked: s[8],
+          phase2Claimable: s[9],
+          phase2AlreadyClaimed: s[10],
+          phase2EarliestUnlock: s[11],
         }
       })()
     : null
@@ -314,7 +340,8 @@ export function useICO() {
 
     // Actions
     approveUsdt,
-    buy,
+    buyPhase1,
+    buyPhase2,
     claimPhase1,
     claimPhase2,
     claimAllPhase1,

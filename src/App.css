@@ -392,9 +392,9 @@ header.scrolled {
 
 .ico-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 30px;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
@@ -1492,6 +1492,14 @@ footer {
 
   section {
     padding: 60px 0;
+  }
+
+  .ico-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .purchase-panel {
+    padding: 25px;
   }
 
   .ecology-text-container {

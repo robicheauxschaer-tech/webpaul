@@ -4,15 +4,19 @@ export const ICO_CONFIG = {
   PRICE: 0.2,                    // 0.2 USDT = 1 PAULO
   PAULO_PER_USDT: 5,             // 1 USDT = 5 PAULO
 
-  // Purchase limits (TESTING: reduced by 10x)
-  MIN_PURCHASE: 4,               // Minimum 4 USDT per transaction
-  MAX_PURCHASE: 40,              // Maximum 40 USDT per transaction
-  MAX_PER_ACCOUNT: 40,           // Maximum 40 USDT per account total
+  // Phase 1: Fixed amount, one purchase per address
+  PHASE1_PURCHASE: 10_000,       // Fixed 10,000 USDT per purchase
+  PHASE1_PAULO: 50_000,          // 10,000 USDT * 5 = 50,000 PAULO
+
+  // Phase 2: Range purchase, max 4 purchases per address
+  PHASE2_MIN_PURCHASE: 40,       // Minimum 40 USDT per transaction
+  PHASE2_MAX_PURCHASE: 400,      // Maximum 400 USDT per transaction
+  PHASE2_MAX_PURCHASES: 4,       // Maximum 4 purchases per address
 
   // Total supply allocation
   TOTAL_SUPPLY: 120_000_000,     // 120 million total
-  LOCK_1_YEAR: 20_000_000,       // 20 million locked for 1 year
-  LOCK_4_YEAR: 100_000_000,      // 100 million locked for 4 years
+  PHASE1_TOTAL: 20_000_000,      // 20 million for Phase 1 (1 year lock)
+  PHASE2_TOTAL: 100_000_000,     // 100 million for Phase 2 (4 years lock)
 
   // Lock periods in seconds
   LOCK_1_YEAR_SECONDS: 365 * 24 * 60 * 60,  // 1 year
