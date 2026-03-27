@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useICO } from '../../hooks/useICO'
 import { useWallet } from '../../hooks/useWallet'
 import { ICO_CONFIG } from '../../constants/ico'
@@ -11,6 +11,8 @@ function formatLockDays(days: number): string {
   }
   return `${days} day${days > 1 ? 's' : ''}`
 }
+
+type TxStep = 'idle' | 'approving' | 'buying'
 
 function Phase1Panel() {
   const { isConnected } = useWallet()
@@ -27,11 +29,8 @@ function Phase1Panel() {
     refetchAll,
   } = useICO()
 
-  useEffect(() => {
-    if (isConfirmed) {
-      refetchAll()
-    }
-  }, [isConfirmed, refetchAll])
+  const [step, setStep] = useState<TxStep>('idle')
+  const prevConfirmed = useRef(false)
 
   const phase1Amount = BigInt(ICO_CONFIG.PHASE1_PURCHASE) * BigInt(1e18)
   const requiresApproval = needsApproval(phase1Amount)
@@ -39,12 +38,53 @@ function Phase1Panel() {
   const phase1LockDays = saleInfo ? Math.floor(Number(saleInfo.phase1LockDuration) / 86400) : 365
   const phase1Remaining = saleInfo ? Number(saleInfo.phase1Remaining) / 1e6 : 0
 
-  const handleApprove = () => {
-    approveUsdt(phase1Amount)
+  // Watch for transaction confirmation
+  useEffect(() => {
+    if (isConfirmed && !prevConfirmed.current) {
+      if (step === 'approving') {
+        // Approve done, now auto-buy
+        refetchAll()
+        setStep('buying')
+        // Small delay to let allowance refetch settle
+        setTimeout(() => {
+          buyPhase1()
+        }, 500)
+      } else if (step === 'buying') {
+        // Buy done
+        refetchAll()
+        setStep('idle')
+      }
+    }
+    prevConfirmed.current = !!isConfirmed
+  }, [isConfirmed, step, refetchAll, buyPhase1])
+
+  const handlePurchase = () => {
+    if (requiresApproval) {
+      setStep('approving')
+      approveUsdt(phase1Amount)
+    } else {
+      setStep('buying')
+      buyPhase1()
+    }
   }
 
-  const handleBuy = () => {
-    buyPhase1()
+  const isBusy = isWritePending || isConfirming
+
+  const getButtonText = () => {
+    if (step === 'approving') {
+      if (isConfirming) return 'Confirming Approval...'
+      if (isWritePending) return 'Approving...'
+      return 'Approving...'
+    }
+    if (step === 'buying') {
+      if (isConfirming) return 'Confirming Purchase...'
+      if (isWritePending) return 'Buying...'
+      return 'Buying...'
+    }
+    if (requiresApproval) {
+      return `Approve & Buy ${ICO_CONFIG.PHASE1_PAULO.toLocaleString()} PAULO`
+    }
+    return `Buy ${ICO_CONFIG.PHASE1_PAULO.toLocaleString()} PAULO`
   }
 
   return (
@@ -81,24 +121,13 @@ function Phase1Panel() {
               Already Purchased
             </button>
           ) : (
-            <>
-              {requiresApproval && (
-                <button
-                  className="btn"
-                  disabled={isWritePending || isConfirming}
-                  onClick={handleApprove}
-                >
-                  {isWritePending ? 'Approving...' : `Approve ${ICO_CONFIG.PHASE1_PURCHASE.toLocaleString()} USDT`}
-                </button>
-              )}
-              <button
-                className="btn"
-                disabled={isWritePending || isConfirming || requiresApproval}
-                onClick={handleBuy}
-              >
-                {isConfirming ? 'Confirming...' : isWritePending ? 'Buying...' : `Buy ${ICO_CONFIG.PHASE1_PAULO.toLocaleString()} PAULO`}
-              </button>
-            </>
+            <button
+              className="btn"
+              disabled={isBusy || step !== 'idle'}
+              onClick={handlePurchase}
+            >
+              {getButtonText()}
+            </button>
           )}
         </div>
       )}
@@ -123,12 +152,9 @@ function Phase2Panel() {
   } = useICO()
 
   const [localAmount, setLocalAmount] = useState('')
-
-  useEffect(() => {
-    if (isConfirmed) {
-      refetchAll()
-    }
-  }, [isConfirmed, refetchAll])
+  const [step, setStep] = useState<TxStep>('idle')
+  const prevConfirmed = useRef(false)
+  const pendingAmountRef = useRef<bigint>(0n)
 
   const pauloAmount = calculatePauloAmount(localAmount)
   const amountBigInt = BigInt(Math.floor(parseFloat(localAmount || '0') * 1e18))
@@ -140,16 +166,57 @@ function Phase2Panel() {
   const phase2LockDays = saleInfo ? Math.floor(Number(saleInfo.phase2LockDuration) / 86400) : 1460
   const phase2Remaining = saleInfo ? Number(saleInfo.phase2Remaining) / 1e6 : 0
 
-  const handleApprove = () => {
-    if (amountBigInt > 0n) {
+  // Watch for transaction confirmation
+  useEffect(() => {
+    if (isConfirmed && !prevConfirmed.current) {
+      if (step === 'approving') {
+        // Approve done, now auto-buy
+        refetchAll()
+        setStep('buying')
+        const amount = pendingAmountRef.current
+        setTimeout(() => {
+          buyPhase2(amount)
+        }, 500)
+      } else if (step === 'buying') {
+        // Buy done
+        refetchAll()
+        setStep('idle')
+        setLocalAmount('')
+        pendingAmountRef.current = 0n
+      }
+    }
+    prevConfirmed.current = !!isConfirmed
+  }, [isConfirmed, step, refetchAll, buyPhase2])
+
+  const handlePurchase = () => {
+    if (amountBigInt <= 0n) return
+    pendingAmountRef.current = amountBigInt
+    if (requiresApproval) {
+      setStep('approving')
       approveUsdt(amountBigInt)
+    } else {
+      setStep('buying')
+      buyPhase2(amountBigInt)
     }
   }
 
-  const handleBuy = () => {
-    if (amountBigInt > 0n) {
-      buyPhase2(amountBigInt)
+  const isBusy = isWritePending || isConfirming
+
+  const getButtonText = () => {
+    if (step === 'approving') {
+      if (isConfirming) return 'Confirming Approval...'
+      if (isWritePending) return 'Approving...'
+      return 'Approving...'
     }
+    if (step === 'buying') {
+      if (isConfirming) return 'Confirming Purchase...'
+      if (isWritePending) return 'Buying...'
+      return 'Buying...'
+    }
+    if (requiresApproval) {
+      return 'Approve & Buy'
+    }
+    return 'Buy'
   }
 
   return (
@@ -167,7 +234,7 @@ function Phase2Panel() {
           value={localAmount}
           onChange={(e) => setLocalAmount(e.target.value)}
           placeholder={`${ICO_CONFIG.PHASE2_MIN_PURCHASE} - ${ICO_CONFIG.PHASE2_MAX_PURCHASE} USDT`}
-          disabled={!isConnected || reachedLimit}
+          disabled={!isConnected || reachedLimit || step !== 'idle'}
           min={ICO_CONFIG.PHASE2_MIN_PURCHASE}
           max={ICO_CONFIG.PHASE2_MAX_PURCHASE}
           step="1"
@@ -202,24 +269,13 @@ function Phase2Panel() {
               Purchase Limit Reached ({ICO_CONFIG.PHASE2_MAX_PURCHASES}/{ICO_CONFIG.PHASE2_MAX_PURCHASES})
             </button>
           ) : (
-            <>
-              {requiresApproval && (
-                <button
-                  className="btn"
-                  disabled={isWritePending || isConfirming}
-                  onClick={handleApprove}
-                >
-                  {isWritePending ? 'Approving...' : 'Approve USDT'}
-                </button>
-              )}
-              <button
-                className="btn"
-                disabled={isWritePending || isConfirming || requiresApproval}
-                onClick={handleBuy}
-              >
-                {isConfirming ? 'Confirming...' : isWritePending ? 'Buying...' : 'Buy'}
-              </button>
-            </>
+            <button
+              className="btn"
+              disabled={isBusy || step !== 'idle' || amountBigInt <= 0n}
+              onClick={handlePurchase}
+            >
+              {getButtonText()}
+            </button>
           )}
         </div>
       )}

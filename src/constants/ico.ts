@@ -1,12 +1,12 @@
 // ICO Configuration Constants
 export const ICO_CONFIG = {
-  // Price: 0.2 USDT = 1 PAULO, so 1 USDT = 5 PAULO
-  PRICE: 0.2,                    // 0.2 USDT = 1 PAULO
-  PAULO_PER_USDT: 5,             // 1 USDT = 5 PAULO
+  // Price: 0.4 USDT = 1 PAULO, so 1 USDT = 2.5 PAULO
+  PRICE: 0.4,                    // 0.4 USDT = 1 PAULO
+  PAULO_PER_USDT: 2.5,           // 1 USDT = 2.5 PAULO
 
   // Phase 1: Fixed amount, one purchase per address
   PHASE1_PURCHASE: 10_000,       // Fixed 10,000 USDT per purchase
-  PHASE1_PAULO: 50_000,          // 10,000 USDT * 5 = 50,000 PAULO
+  PHASE1_PAULO: 25_000,          // 10,000 USDT * 2.5 = 25,000 PAULO
 
   // Phase 2: Range purchase, max 4 purchases per address
   PHASE2_MIN_PURCHASE: 40,       // Minimum 40 USDT per transaction
